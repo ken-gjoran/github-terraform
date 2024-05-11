@@ -8,9 +8,9 @@ terraform {
 
   backend "azurerm" {
     resource_group_name  = "rg-backend-test99"
-    storage_account_name = "satbetest99eg89mhrqxq"
+    storage_account_name = "satbetest99eg89mhrqxq2"
     container_name       = "scbetest99"
-    key                  = "webtest99.terraform.tfstate"
+    key                  = "webtest999.terraform.tfstate"
   }
 }
 
@@ -46,7 +46,7 @@ resource "azurerm_storage_account" "sa_backend" {
   resource_group_name      = azurerm_resource_group.rg_backend.name
   location                 = azurerm_resource_group.rg_backend.location
   account_tier             = "Standard"
-  account_replication_type = "GRS"
+  account_replication_type = "LRS"
 }
 
 // ----- Storage Account WEB ----- //
@@ -55,7 +55,7 @@ resource "azurerm_storage_account" "sa_web" {
   resource_group_name      = azurerm_resource_group.rg_backend.name
   location                 = azurerm_resource_group.rg_backend.location
   account_tier             = "Standard"
-  account_replication_type = "GRS"
+  account_replication_type = "LRS"
 
   static_website {
     index_document = var.index_document

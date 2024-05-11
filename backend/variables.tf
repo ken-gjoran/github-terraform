@@ -27,3 +27,18 @@ variable "sa_backend_acesskey_name" {
   type        = string
   description = "Name of the storage account access key for the backend"
 }
+variable "rg_name" {
+  type        = string
+  description = "Blabla"
+}
+
+// ----- WEB ------ //
+variable "source_content" {
+  type        = string
+  description = "Source content for the index.html file"
+}
+
+variable "index_document" {
+  type        = string
+  description = "Name of the index document"
+}

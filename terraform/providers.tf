@@ -7,9 +7,9 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "rg-backend-tfstate"
+    resource_group_name  = "rg-backend-test99"
     storage_account_name = "satbetest99eg89mhrqxq"
-    container_name       = "tfstate"
+    container_name       = "scbetest99"
     key                  = "rg.terraform.tfstate"
   }
 }

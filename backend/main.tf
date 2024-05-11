@@ -10,7 +10,7 @@ terraform {
     resource_group_name  = "rg-backend-test99"
     storage_account_name = "satbetest99eg89mhrqxq"
     container_name       = "scbetest99"
-    key                  = "backend.terraform.tfstate"
+    key                  = "webtest99.terraform.tfstate"
   }
 }
 
@@ -28,10 +28,16 @@ resource "random_string" "random_string" {
   special = false
   upper   = false
 }
+// ----- LOCALS ----- //
+locals {
+  workspaces_suffix = terraform.workspace == "default" ? "" : "${terraform.workspace}"
+
+  rg_name = "${var.rg_name}-${local.workspaces_suffix}"
+}
 
 // ----- Resource Group ----- //
 resource "azurerm_resource_group" "rg_backend" {
-  name     = var.rg_backend_name
+  name     = local.rg_name
   location = var.rg_backend_location
 }
 // ----- Storage Account ----- //
@@ -41,6 +47,19 @@ resource "azurerm_storage_account" "sa_backend" {
   location                 = azurerm_resource_group.rg_backend.location
   account_tier             = "Standard"
   account_replication_type = "GRS"
+}
+
+// ----- Storage Account WEB ----- //
+resource "azurerm_storage_account" "sa_web" {
+  name                     = "${lower(var.sa_backend_name)}${random_string.random_string.result}"
+  resource_group_name      = azurerm_resource_group.rg_backend.name
+  location                 = azurerm_resource_group.rg_backend.location
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+
+  static_website {
+    index_document = var.index_document
+  }
 }
 // -----  Storage Container ----- //
 resource "azurerm_storage_container" "sc_backend" {
@@ -85,4 +104,25 @@ resource "azurerm_key_vault_secret" "sa_backend_accesskey" {
   name         = var.sa_backend_acesskey_name
   value        = azurerm_storage_account.sa_backend.primary_access_key
   key_vault_id = azurerm_key_vault.kv_backend.id
+}
+
+
+
+//------ Legg til en index.html file til storage account -----//
+resource "azurerm_storage_blob" "index_html" {
+  name                   = var.index_document
+  storage_account_name   = azurerm_storage_account.sa_web.name
+  storage_container_name = "$web"
+  type                   = "Block"
+  content_type           = "text/html"
+  source_content         = var.source_content
+}
+
+//----- Outputs ----- //
+output "primary_web_endpoint" {
+  value = azurerm_storage_account.sa_web.primary_web_endpoint
+}
+
+output "rg_name" {
+  value = azurerm_resource_group.rg_backend.name
 }

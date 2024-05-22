@@ -5,13 +5,13 @@ terraform {
       version = "3.98.0"
     }
   }
-// ----- Backend: Husk å endre KEY ved ny infrastruktur ----- //
-//  backend "azurerm" {
-  //  resource_group_name  = "rg-backend-992024"
-    //storage_account_name = "satbe992024eg89mhrqxq2"
-    //container_name       = "scbetest992024"
-    //key                  = "backend992024.terraform.tfstate"
- // }
+  // ----- Backend: Husk å endre KEY ved ny infrastruktur ----- //
+backend "azurerm" {
+    resource_group_name  = "rg-992024-tfstate"
+    storage_account_name = "sabe992024kg9tmlog4j"
+    container_name       = "scbe992024"
+    key                  = "backend992024.terraform.tfstate"
+ }
 }
 
 provider "azurerm" {
